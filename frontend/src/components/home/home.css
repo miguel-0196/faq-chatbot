@@ -1,0 +1,430 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@700&display=swap');
+
+body {
+    background: #F8F9FA;
+    overflow-x: hidden;
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.home_subMain {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 20px;
+}
+
+div {
+    font-family: 'Open Sans', sans-serif;
+}
+
+input.form-control {
+    width: 100%;
+    margin-left: 7px;
+}
+
+
+input.form-control.search {
+    width: 69%;
+    margin: 11px 0;
+}
+
+#fileInput {
+    background: transparent;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    text-transform: uppercase;
+}
+
+.upload_inner {
+    border: 1px dashed #ADB5BD;
+    border-radius: 6px;
+    background: #fff;
+    max-width: 250px;
+    height:60px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.form_fields {
+    text-align: left;
+}
+
+.form_fields .control-label {
+    color: #000;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.card {
+    width: 100%;
+    padding: 30px;
+    background-color: #fff;
+    min-height: 212px;
+    border-radius: 8px;
+    border: 1px solid #fff;
+    overflow-y: auto;
+}
+.card:hover{
+    background: #F8F9FA;
+     border: 1px solid #ADB5BD;
+}
+.card_box {
+    width: 33.33%;
+    padding: 0 30px 30px 0;
+
+}
+
+.card h4 {
+    font-family: Open Sans;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: #000;
+    margin:0 0 10px;
+
+}
+
+.card p {
+    font-family: Abhaya Libre;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: #6C757D;
+}
+ 
+.form-control.search {
+    width: 19%;
+    margin: 0px auto;
+}
+
+.form_outer {
+    display: flex;
+    align-items: flex-end;
+    gap: 30px;
+}
+
+.form_outer .btn.btn-primary {
+    border: 1px solid #333;
+    border-radius: 6px;
+    background:#333;
+    max-width: 250px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #fff;
+    width: 100%;
+    margin: 10px 0 0;
+    text-align: center;
+    justify-content: center;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+ 
+button.btn.btn-primary {
+    margin-left: 13px;
+}
+
+
+.home_subMain {
+    display: flex;
+    flex-direction: row;
+}
+
+.faq {
+    flex: 0 0 70%;
+    padding: 10px;
+}
+
+.faq-card {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.user_message p {
+    margin: 0;
+
+}
+
+.user {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+.user_message {
+    display: inline-block;
+    background: #3A5AFF;
+    color: #fff;
+    border-radius: 18px 18px 0 18px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+.btn.btn-primary {
+	padding: 10px 25px;
+	font-size: 16px;
+	background: #000;
+	border-color: #000;
+}
+.ai-response {
+    background: #F8F8F8;
+    padding: 15px;
+    border-radius: 18px 18px 18px 0;
+    text-align: left;
+    width: 70%;
+    color: #fff;
+    margin: 5px 0;
+}
+
+.ai-response_name {
+    text-align: left;
+}
+
+.ai-response li {
+     font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: #6C757D;
+}
+
+.ai-response p {
+     font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    text-align: left;
+    color: #333;
+    margin: 0;
+}
+
+.page_outer {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.chat_side {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    padding: 30px 30px 50px;
+    height: 100%;
+    position: relative;
+}
+
+#msg_outer {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.left_side {
+    width: 100%;
+    padding: 20px 30px;
+}
+
+.search_box .form-control.search {
+    border: 1px solid #ADB5BD;
+    height: 60px;
+    box-shadow: none;
+    padding: 0 15px;
+    font-size: 16px;
+    color: #000;
+    text-transform: unset;
+}
+
+.search_box .form-control.search {
+    border: 1px solid #ADB5BD;
+    height: 60px;
+    box-shadow: none;
+    padding: 0 15px;
+    text-transform: unset;
+    background: transparent;
+    max-width: 385px;
+    margin: 0 auto;
+    border-radius: 8px;
+    font-family: Abhaya Libre;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: #6C757D;
+}
+
+.search_box {
+    width: 100%;
+    display: block;
+    margin: 50px 0 30px;
+}
+.message-outer .form-control {
+    width: 100%;
+    border: none !important;
+    outline: none !important;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: -0.02em;
+    text-align: left;
+    color: #333;
+    box-shadow: none !important;
+    font-family: 'Open Sans', sans-serif;
+    padding: 0;
+}
+.message-outer {
+	display: flex;
+	justify-content: space-between;
+	position: absolute;
+	left: 10px;
+	right: 10px;
+    bottom: 10px;
+	border: 1px solid #6C757D21;
+	padding: 0 0 0 10px;
+    align-items: center;
+    border-radius: 8px;
+}
+/*loader css strat here*/
+.spinner {
+    width: 100%;
+    display: flex;
+}
+
+.spinner .bounce1 {
+    -webkit-animation-delay: -.32s;
+    animation-delay: -.32s;
+}
+
+.spinner div {
+    width: 15px;
+    height: 15px;
+    background-color: #3A5AFF;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation-delay: 0s;
+}
+
+.spinner .bounce2 {
+    -webkit-animation-delay: -.16s;
+    animation-delay: -.16s;
+}
+
+
+.bouncer {
+    width: 100%;
+}
+
+.bouncer .bounce1 {
+    -webkit-animation-delay: -.32s;
+    animation-delay: -.32s;
+}
+
+.bouncer div {
+    width: 15px;
+    height: 15px;
+    background-color: #f8f8f8;
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation-delay: 0s;
+}
+
+.bouncer .bounce2 {
+    -webkit-animation-delay: -.16s;
+    animation-delay: -.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0)
+    }
+
+    40% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bouncedelay {
+
+    0%,
+    80%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    40% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+    }
+}
+
+/*loader css end here*/
+
+@media only screen and (max-width:1199px) {
+.card_box {
+	width: 50%;
+	padding: 0 15px 30px;
+}
+.faq-card {
+	width: auto;
+	margin: 0 -15px;
+}   
+
+   
+    
+}
+
+
+@media only screen and (max-width: 767px) {
+.card_box {
+	width: 100%;
+	padding: 0 0 15px;
+}
+.page_outer {
+	flex-wrap: wrap;
+}
+.left_side {
+	width: 100%;
+	padding: 30px 15px;
+}    
+.chat_side {
+	min-height: 400px;
+}
+    .form_outer .btn.btn-primary{
+        font-size: 16px;
+    }    
+    
+}
