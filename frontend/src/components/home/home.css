@@ -48,7 +48,7 @@ input.form-control.search {
     border-radius: 6px;
     background: #fff;
     max-width: 250px;
-    height:60px;
+    height:50px;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -67,9 +67,9 @@ input.form-control.search {
 
 .card {
     width: 100%;
-    padding: 30px;
+    padding: 25px;
     background-color: #fff;
-    min-height: 212px;
+    height: 212px;
     border-radius: 8px;
     border: 1px solid #fff;
     overflow-y: auto;
@@ -115,14 +115,15 @@ input.form-control.search {
     display: flex;
     align-items: flex-end;
     gap: 30px;
+    margin-top: 10px;
 }
 
 .form_outer .btn.btn-primary {
     border: 1px solid #333;
     border-radius: 6px;
     background:#333;
-    max-width: 250px;
-    height: 60px;
+    max-width: 190px;
+    height: 50px;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -131,8 +132,9 @@ input.form-control.search {
     margin: 10px 0 0;
     text-align: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     text-transform: uppercase;
+    outline: none !important;
 }
 
 .blink_me {
@@ -165,6 +167,9 @@ button.btn.btn-primary {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
+    height: 470px;
+    overflow-y: auto;
+    padding-bottom: 100px;
 }
 
 .user_message p {
@@ -229,6 +234,7 @@ button.btn.btn-primary {
     display: flex;
     width: 100%;
     height: 100vh;
+    overflow: hidden;
 }
 
 .chat_side {
@@ -391,6 +397,33 @@ button.btn.btn-primary {
     }
 }
 
+.filter_btn svg {
+	width: 25px;
+	height: 25px;
+    color: #012AFF;
+}
+.filter_btn {
+	padding: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background: transparent;
+	min-height: 40px;
+	min-width: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 7px;
+}
+.filter_btn:hover {
+  background: #ededed;
+}
+
+.disable_Button {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 /*loader css end here*/
 
 @media only screen and (max-width:1199px) {
