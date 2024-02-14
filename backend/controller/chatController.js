@@ -62,7 +62,7 @@ const generateFaq = async(req,res)=>{
       }
       // Add a new message to the chat
       chat.messages.push({ sender: "user", content: question });
-
+      chat.cards.push({ sender: "user", content: question });
       // Save the updated chat
       const updatedChat = await chat.save();
       const updatedChatId = updatedChat._id
@@ -98,6 +98,7 @@ const generateFaq = async(req,res)=>{
       if (updatedChat) {
         if (text) {
           chat.messages.push({ sender: "bot", content: text});
+          chat.cards.push({ sender: "bot", content: text})
           const updatedChat = await chat.save();
     }
   }
@@ -125,6 +126,7 @@ const generateFaq = async(req,res)=>{
     if (question) {
       const messageArray = [{ sender: "user", content: question }];
       newChat.messages.push(...messageArray);
+      newChat.cards.push(...messageArray)
     }
 
     // Save the chat to the database
@@ -141,6 +143,7 @@ const generateFaq = async(req,res)=>{
       if (text ) {
         console.log('dummyresponse')
         chat.messages.push({ sender: "bot", content: text});
+        chat.cards.push({ sender: "bot", content: text})
         const updatedChat = await chat.save();
       }
     }
@@ -191,5 +194,26 @@ const getAllChat = async (req, res) => {
 
 
 
+const deleteChat = async(req,res)=>{
+  const { chatRoomId } = req.params;
+  console.log("chatRoomId>>>>>>>>>", chatRoomId)
 
-export  {generateFaq , getChat, getAllChat};
+  try {
+    const chat = await Chat.findById(chatRoomId);
+
+    if (!chat) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
+    chat.messages = [];
+    const updatedChat = await chat.save();
+    res.status(200).json({ success: true, message: "Chat messages deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+
+
+
+export  {generateFaq , getChat, getAllChat, deleteChat};

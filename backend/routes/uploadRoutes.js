@@ -1,5 +1,6 @@
 import { Router } from "express";
-import uploadPdf from "../controller/uploadFileController.js";
+import {uploadPdf} from "../controller/uploadFileController.js";
+import { deleteUploadedDocs } from "../controller/uploadFileController.js";
 import multer from "multer";
 import path from "path";
 
@@ -19,5 +20,6 @@ const pdfstorage = multer.diskStorage({
 
 
 router.post("/upload/pdf",uploadPdfData.single('pdf'), uploadPdf);
+router.delete("/delete-docs", deleteUploadedDocs);
 
 export default router;

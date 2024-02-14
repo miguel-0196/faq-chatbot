@@ -74,4 +74,19 @@ import { PINECONE_INDEX_NAME ,PINECONE_NAME_SPACE} from "../config/pinecone.js";
     }
 };
 
-export default uploadPdf;
+
+
+const deleteUploadedDocs = async(req,res)=>{
+
+    const index =  (await pinecone).Index(PINECONE_INDEX_NAME);
+    console.log("index>>>>>>>>>",index) //change to your own index nam
+
+    const namespaceIndex = index.namespace(PINECONE_NAME_SPACE);
+    const response = await namespaceIndex.deleteAll();
+
+    console.log("res>>>>>>>>>",response)
+   
+    res.status(200).json({success:true, message:"All docs deleted from pinecone"})
+}
+
+export  {uploadPdf, deleteUploadedDocs};
