@@ -2,7 +2,7 @@ import OpenAI from "openai"
 import dotenv from 'dotenv'
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
 import { PineconeStore } from "langchain/vectorstores/pinecone"
-import pinecone from "../utils/pinecone-client.js"
+import pinecone from "../utils/pinecone.js"
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
 import Chat from "../models/chat.js"
 
@@ -12,8 +12,7 @@ dotenv.config()
 const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY })
 
 const generateFaq = async (req, res) => {
-  console.log("req>>>>>>", req.body)
-
+  console.log("generateFaq>>>>>>", req.body)
 
   const { question, chatRoomId } = req.body
 
@@ -23,34 +22,24 @@ const generateFaq = async (req, res) => {
     const index = (await pinecone).Index(PINECONE_INDEX_NAME)
 
     /* create vectorstore*/
-
     const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings({ openAIApiKey: "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" }),
-      {
+      new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_KEY }), {
         pineconeIndex: index,
         textKey: 'text',
         namespace: PINECONE_NAME_SPACE,
       },
     )
 
-    console.log("vectorStore>>>>>", vectorStore)
-
     const docs = await vectorStore.similaritySearch(sanitizedQuestion, 5)
     const jsonDocs = JSON.stringify(docs)
-    console.log("docs>>>>", jsonDocs)
 
-
-
-
-    const PROMPT =
-      `
+    const PROMPT = `
     * * Please provide a answer according to uploaded docs. **
     Question: ${question}
     =========
     context:${jsonDocs}
     =========
     Answer in Markdown:`
-
 
 
     if (chatRoomId) {
@@ -63,6 +52,7 @@ const generateFaq = async (req, res) => {
       // Add a new message to the chat
       chat.messages.push({ sender: "user", content: question })
       chat.cards.push({ sender: "user", content: question })
+      
       // Save the updated chat
       const updatedChat = await chat.save()
       const updatedChatId = updatedChat._id
@@ -152,9 +142,8 @@ const generateFaq = async (req, res) => {
     }
   }
   catch (error) {
-    res.status(500).json({ status: false, error: 'something went wrong !' })
+    res.status(500).json({ status: false, error: 'something went wrong!' })
   }
-
 }
 
 
@@ -163,7 +152,7 @@ const getChat = async (req, res) => {
 
   try {
     const chat = await Chat.findById(chatRoomId)
-    // console.log("chat>>>>>>>>>>",chat)
+    console.log("getChat>>>>>>>>>>",chat)
 
     if (!chat) {
       res.status(404).json({ error: "Chat not found" })
@@ -179,7 +168,7 @@ const getAllChat = async (req, res) => {
 
   try {
     const chat = await Chat.find()
-    // console.log("chat>>>>>>>>>>",chat)
+    console.log("getAllChat>>>>>>>>>>", chat)
 
     if (!chat) {
       res.status(404).json({ error: "Chat not found" })
@@ -196,7 +185,7 @@ const getAllChat = async (req, res) => {
 
 const deleteChat = async (req, res) => {
   const { chatRoomId } = req.params
-  console.log("chatRoomId>>>>>>>>>", chatRoomId)
+  console.log("deleteChat>>>>>>>>>", chatRoomId)
 
   try {
     const chat = await Chat.findById(chatRoomId)
@@ -212,7 +201,6 @@ const deleteChat = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" })
   }
 }
-
 
 
 
