@@ -1,9 +1,9 @@
-import '../home/home.css';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ReactMarkdown from "react-markdown";
+import '../home/home.css'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import ReactMarkdown from "react-markdown"
 
 
 const Home = () => {
@@ -11,25 +11,24 @@ const Home = () => {
   //const Base_Url = "http://66.42.101.116:8000" Debug
   const Base_Url = "http://localhost:8000"
 
-  const [file, setFile] = useState('');
+  const [file, setFile] = useState('')
   const [uploadTrue, setUploadTrue] = useState(false)
   const [card, setCard] = useState([])
   const [filterCard, setFilterCard] = useState([])
 
-  const [lengthOfDiv, setLenghtofDiv] = useState()
   const [searchInput, setSearchInput] = useState('')
-  const [inputMessage, setInputMessage] = useState('');
+  const [inputMessage, setInputMessage] = useState('')
   const [message, setMessage] = useState([])
 
   const [showResponse, setShowResponse] = useState(false)
   const [chatRoomId, setChatRoomId] = useState('')
 
-  const [dlgQuestion, setDlgQuestion] = useState("");
-  const [dlgAnswer, setDlgAnswer] = useState("");
+  const [dlgQuestion, setDlgQuestion] = useState("")
+  const [dlgAnswer, setDlgAnswer] = useState("")
   const [dlgOpenIdx, setDlgOpenIdx] = useState(-1)
 
-  const [orgQuestion, setOrgQuestion] = useState("");
-  const [orgAnswer, setOrgAnswer] = useState("");
+  const [orgQuestion, setOrgQuestion] = useState("")
+  const [orgAnswer, setOrgAnswer] = useState("")
 
 
   const searchCard = (val) => {
@@ -38,29 +37,29 @@ const Home = () => {
   }
 
   const handleAddFactCard = async (e) => {
-    setDlgQuestion("");
-    setDlgAnswer("");
-    setOrgQuestion("");
-    setOrgAnswer("");
-    setDlgOpenIdx(-1);
+    setDlgQuestion("")
+    setDlgAnswer("")
+    setOrgQuestion("")
+    setOrgAnswer("")
+    setDlgOpenIdx(-1)
   }
 
   const openEditCardDialog = (index) => {
-    setDlgQuestion(filterCard[index].question);
-    setDlgAnswer(filterCard[index].answer);
-    setOrgQuestion(filterCard[index].question);
-    setOrgAnswer(filterCard[index].answer);
-    setDlgOpenIdx(index);
+    setDlgQuestion(filterCard[index].question)
+    setDlgAnswer(filterCard[index].answer)
+    setOrgQuestion(filterCard[index].question)
+    setOrgAnswer(filterCard[index].answer)
+    setDlgOpenIdx(index)
   }
 
   const saveEditCardDialog = async () => {
     try {
-      const result = await axios.post(`${Base_Url}/api/updateCard`, { question: dlgQuestion, answer: dlgAnswer, orgQuestion: orgQuestion, orgAnswer: orgAnswer });
-      if (dlgOpenIdx == -1) {
+      await axios.post(`${Base_Url}/api/updateCard`, { question: dlgQuestion, answer: dlgAnswer, orgQuestion: orgQuestion, orgAnswer: orgAnswer })
+      if (dlgOpenIdx === -1) {
         setCard([...card, {question: dlgQuestion, answer: dlgAnswer}])
         setFilterCard([...filterCard, {question: dlgQuestion, answer: dlgAnswer}])
-        setDlgQuestion("");
-        setDlgAnswer("");
+        setDlgQuestion("")
+        setDlgAnswer("")
       } else {
         setFilterCard(prevState => {
           const updatedFilterCard = [...prevState]
@@ -69,18 +68,18 @@ const Home = () => {
         })
       }
     } catch (error) {
-      console.log("saveEditCardDialog error:", error);
+      console.log("saveEditCardDialog error:", error)
     }
   }
 
   const handlePdfChange = (event) => {
-    const selectedFile = event.target.files[0];
+    const selectedFile = event.target.files[0]
     console.log("selectedfiles>>>>>>>>>", selectedFile)
-    setFile(selectedFile);
-  };
+    setFile(selectedFile)
+  }
 
   const handleUploadDocs = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     setUploadTrue(true)
 
     const formData = new FormData()
@@ -93,7 +92,7 @@ const Home = () => {
 
       try {
 
-        const result = await axios.post(`${Base_Url}/api/upload/pdf`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const result = await axios.post(`${Base_Url}/api/upload/pdf`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         console.log("result>>>>>>>", result)
         setUploadTrue(false)
         toast.success("File uploaded, moved, and ingested successfully!")
@@ -114,14 +113,14 @@ const Home = () => {
 
   const loadAllData = async () => {
     const cards = await axios.get(`${Base_Url}/api/getCards`)
-    if (cards.data.sucess == true) {
+    if (cards.data.sucess === true) {
       setCard(cards.data.cards)
       setFilterCard(cards.data.cards)
     }
 
     // Debug
-    const AllChat = await axios.get(`${Base_Url}/api/get-Allfaq`);
-    if (AllChat.data.sucess == true && AllChat.data.userChat.length > 0) {
+    const AllChat = await axios.get(`${Base_Url}/api/get-Allfaq`)
+    if (AllChat.data.sucess === true && AllChat.data.userChat.length > 0) {
       setChatRoomId(AllChat.data.userChat[0]._id)
       setMessage(AllChat.data.userChat[0].messages)
     }
@@ -137,24 +136,24 @@ const Home = () => {
     const getFaqs = async () => {
       try {
         if (chatRoomId) {
-          const Chat = await axios.get(`${Base_Url}/api/get-faq/${chatRoomId}`);
+          const Chat = await axios.get(`${Base_Url}/api/get-faq/${chatRoomId}`)
           console.log("getDoc>>>>>>>>>>", Chat)
-          if (Chat.data.sucess == true) {
+          if (Chat.data.sucess === true) {
             setChatRoomId(Chat.data.userChat._id)
             setMessage(Chat.data.userChat.messages)
             const cards = Chat.data.userChat.cards
 
-            const newCardList = [];
+            const newCardList = []
             for (let i = 0; i < cards.length - 1; i += 2) {
-              const userMessage = cards[i];
-              const botMessage = cards[i + 1];
+              const userMessage = cards[i]
+              const botMessage = cards[i + 1]
 
               if (userMessage.sender === "user" && botMessage.sender === "bot") {
                 const newCard = {
                   question: userMessage.content,
                   answer: botMessage.content
-                };
-                newCardList.push(newCard);
+                }
+                newCardList.push(newCard)
                 // setCard(prev=> [...prev,newCard])
               }
             }
@@ -168,7 +167,7 @@ const Home = () => {
       }
     }
     getFaqs()
-  }, [])
+  }, [chatRoomId])
 
 
 
@@ -184,14 +183,14 @@ const Home = () => {
     setMessage(prev => ([...prev, userMesseage]))
     setInputMessage('')
 
-    // const msgOuterDiv = document.getElementById("msg_outer");
-    // const lastDiv = msgOuterDiv?.lastElementChild;
+    // const msgOuterDiv = document.getElementById("msg_outer")
+    // const lastDiv = msgOuterDiv?.lastElementChild
     // console.log("divetofocus", lastDiv)
-    // lastDiv?.focus();
-    // lastDiv?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest", scrollOffset: "50px" });
+    // lastDiv?.focus()
+    // lastDiv?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest", scrollOffset: "50px" })
 
     try {
-      let body;
+      let body
 
       if (chatRoomId) {
         body = {
@@ -207,7 +206,7 @@ const Home = () => {
       const result = await axios.post(`${Base_Url}/api/genrate-faq`, body)
       console.log("result>>>>>>>", result)
 
-      if (result.data.status == true) {
+      if (result.data.status === true) {
         setShowResponse(false)
         setChatRoomId(result.data.chatRoomId)
         const gptResponse = {
@@ -233,38 +232,15 @@ const Home = () => {
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-      handleSend();
+      handleSend()
     }
-  };
-
-
-  // useEffect(() => {
-
-  //   const msgOuterDiv = document.getElementById("msg_outer");
-  //   const lastDiv = msgOuterDiv?.lastElementChild;
-  //   console.log("divetofocus", lastDiv)
-  //   lastDiv?.focus();
-  //   lastDiv?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest", scrollOffset: "50px" });
-
-  // }, [lengthOfDiv])
-
-
-  // useEffect(() => {
-  //   const chatLog = document.getElementById("msg_outer");
-  //   const lengthOfDiv = chatLog.children.length - 1;
-  //   if (lengthOfDiv > 0) {
-  //     const lastMsgDiv = chatLog.children[lengthOfDiv - 1];
-  //     setLenghtofDiv(lastMsgDiv.innerText);
-  //   }
-  // }, [message])
-
-
+  }
 
 
   const handleDeleteHistory = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const isConfirmed = window.confirm("Are you sure you want to delete the chat history?");
+    const isConfirmed = window.confirm("Are you sure you want to delete the chat history?")
     if (isConfirmed) {
       try {
         const deleteChat = await axios.delete(`${Base_Url}/api/deleteHistory/${chatRoomId}`)
@@ -284,10 +260,10 @@ const Home = () => {
   }
 
   const handleDeleteDocs = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
-      const deleteDocs = await axios.delete(`${Base_Url}/api/delete-docs`);
+      const deleteDocs = await axios.delete(`${Base_Url}/api/delete-docs`)
       console.log("deleteDocs>>>>>>", deleteDocs)
       toast.success("docs deleted successFully")
 
@@ -307,16 +283,9 @@ const Home = () => {
             <form className="form-horizontal">
               <div className="form_outer">
                 <div className='form_fields'>
-                  <label for="file" className="control-label">Upload File</label>
+                  <label htmlFor="file" className="control-label">Upload File</label>
                   <div className='upload_inner'>
-                    <input
-                      type='file'
-                      accept='.pdf'
-                      name='file'
-                      id='fileInput'
-                      className='form-control'
-                      onChange={handlePdfChange}
-                    />
+                    <input type='file' accept='.pdf' name='file' id='fileInput' className='form-control' onChange={handlePdfChange}/>
                   </div>
                 </div>
 
@@ -395,7 +364,7 @@ const Home = () => {
                   </div>
 
                 </>
-              );
+              )
             })}
 
             <div className="random_spinner">
@@ -410,7 +379,7 @@ const Home = () => {
 
           </div>
           <div className='message-outer'>
-            <button type="submit" className={`filter_btn ${message.length == 0 ? "disable_Button" : ""}`} disabled={message.length == 0} onClick={handleDeleteHistory} >
+            <button type="submit" className={`filter_btn ${message.length === 0 ? "disable_Button" : ""}`} disabled={message.length === 0} onClick={handleDeleteHistory} >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path d="M3 6H5H21" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
