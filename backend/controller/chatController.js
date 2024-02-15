@@ -11,17 +11,14 @@ dotenv.config()
 
 const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY })
 
-const generateFaq = async (req, res) => {
-  console.log("generateFaq>>>>>>", req.body)
-
-  const { question, chatRoomId } = req.body
-
+const generateFaq = async (req, res) => {  
   try {
+    console.log('generateFaq:', req.body)
+    const { question, chatRoomId } = req.body
 
-    const sanitizedQuestion = question?.trim().replaceAll('\n', ' ')
-    const index = (await pinecone).Index(PINECONE_INDEX_NAME)
-
-    /* create vectorstore*/
+    /* create vectorstore */
+    const pc = await pinecone()
+    const index = pc.Index(PINECONE_INDEX_NAME)
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_KEY }), {
         pineconeIndex: index,
@@ -30,6 +27,7 @@ const generateFaq = async (req, res) => {
       },
     )
 
+    const sanitizedQuestion = question?.trim().replaceAll('\n', ' ')
     const docs = await vectorStore.similaritySearch(sanitizedQuestion, 5)
     const jsonDocs = JSON.stringify(docs)
 
@@ -43,12 +41,12 @@ const generateFaq = async (req, res) => {
 
 
     if (chatRoomId) {
-
       const chat = await Chat.findById(chatRoomId)
 
       if (!chat) {
-        return res.status(404).json({ error: "Chat not found" })
+        return res.status(404).json({ error: `No chat room ${chatRoomId}` })
       }
+
       // Add a new message to the chat
       chat.messages.push({ sender: "user", content: question })
       chat.cards.push({ sender: "user", content: question })
@@ -142,7 +140,7 @@ const generateFaq = async (req, res) => {
     }
   }
   catch (error) {
-    res.status(500).json({ status: false, error: 'something went wrong!' })
+    res.status(500).json({ status: false, error: error })
   }
 }
 
