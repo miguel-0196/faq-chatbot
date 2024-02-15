@@ -118,8 +118,7 @@ const Home = () => {
       setFilterCard(cards.data.cards)
     }
 
-    // Debug
-    const AllChat = await axios.get(`${Base_Url}/api/get-Allfaq`)
+    const AllChat = await axios.get(`${Base_Url}/api/get-allFaq`)
     if (AllChat.data.sucess === true && AllChat.data.userChat.length > 0) {
       setChatRoomId(AllChat.data.userChat[0]._id)
       setMessage(AllChat.data.userChat[0].messages)
@@ -130,24 +129,24 @@ const Home = () => {
     loadAllData()
   }, [])
 
-  useEffect(() => {
-    const getFaqs = async () => {
-      try {
-        if (chatRoomId) {
-          const Chat = await axios.get(`${Base_Url}/api/get-faq/${chatRoomId}`)
+  // useEffect(() => {
+  //   const getFaqs = async () => {
+  //     try {
+  //       if (chatRoomId) {
+  //         const Chat = await axios.get(`${Base_Url}/api/get-faq/${chatRoomId}`)
 
-          if (Chat.data.sucess === true) {
-            setChatRoomId(Chat.data.userChat._id)
-            setMessage(Chat.data.userChat.messages)
-          }
-        }
-      }
-      catch (error) {
-        console.log("Error in getFaqs:", error)
-      }
-    }
-    getFaqs()
-  }, [chatRoomId])
+  //         if (Chat.data.sucess === true) {
+  //           setChatRoomId(Chat.data.userChat._id)
+  //           setMessage(Chat.data.userChat.messages)
+  //         }
+  //       }
+  //     }
+  //     catch (error) {
+  //       console.log("Error in getFaqs:", error)
+  //     }
+  //   }
+  //   getFaqs()
+  // }, [chatRoomId])
 
 
   const handleSend = async () => {

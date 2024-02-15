@@ -10,7 +10,7 @@ const genrateRoute = Router()
 
 genrateRoute.post('/genrate-faq', generateFaq)
 genrateRoute.get('/get-faq/:chatRoomId', getChat)
-genrateRoute.get('/get-Allfaq/', getAllChat)
+genrateRoute.get('/get-allFaq/', getAllChat)
 genrateRoute.delete('/deleteHistory/:chatRoomId', deleteChat)
 
 genrateRoute.get('/getCards', getCards)
