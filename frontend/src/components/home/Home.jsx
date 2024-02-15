@@ -364,7 +364,7 @@ const Home = () => {
                     </div>
                     <div class="form-group">
                       <label>Answer:</label>
-                      <input type='text' class="form-control" defaultValue={dlgAnswer} value={dlgAnswer} onChange={(e) => setDlgAnswer(e.target.value)} style={{ marginLeft: "0px" }} />
+                      <textarea class="form-control" rows="5" onChange={(e) => setDlgAnswer(e.target.value)} defaultValue={dlgAnswer} value={dlgAnswer}></textarea>
                     </div>
                   </div>
                   <div class="modal-footer">
