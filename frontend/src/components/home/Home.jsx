@@ -8,8 +8,8 @@ import ReactMarkdown from "react-markdown"
 
 const Home = () => {
 
-  //const Base_Url = "http://66.42.101.116:8000" Debug
-  const Base_Url = "http://localhost:8000"
+  const Base_Url = "http://66.42.101.116:8001"
+  //const Base_Url = "http://localhost:8001"
 
   const [file, setFile] = useState('')
   const [uploadTrue, setUploadTrue] = useState(false)

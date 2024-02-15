@@ -34,7 +34,7 @@ pm2 --v
 # Firewall
 
 sudo iptables -L
-sudo iptables -A INPUT -p tcp --dport 8000 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8001 -j ACCEPT
 sudo iptables -A INPUT -p tcp --dport 3000 -j ACCEPT
 sudo service iptables save
 sudo service netfilter-persistent save
