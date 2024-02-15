@@ -130,47 +130,24 @@ const Home = () => {
     loadAllData()
   }, [])
 
-
-
   useEffect(() => {
     const getFaqs = async () => {
       try {
         if (chatRoomId) {
           const Chat = await axios.get(`${Base_Url}/api/get-faq/${chatRoomId}`)
-          console.log("getDoc>>>>>>>>>>", Chat)
+
           if (Chat.data.sucess === true) {
             setChatRoomId(Chat.data.userChat._id)
             setMessage(Chat.data.userChat.messages)
-            const cards = Chat.data.userChat.cards
-
-            const newCardList = []
-            for (let i = 0; i < cards.length - 1; i += 2) {
-              const userMessage = cards[i]
-              const botMessage = cards[i + 1]
-
-              if (userMessage.sender === "user" && botMessage.sender === "bot") {
-                const newCard = {
-                  question: userMessage.content,
-                  answer: botMessage.content
-                }
-                newCardList.push(newCard)
-                // setCard(prev=> [...prev,newCard])
-              }
-            }
-            console.log("newCardList>>>>>", newCardList)
-            setCard(newCardList)
           }
         }
       }
       catch (error) {
-        console.log("error>>>>>>>>>", error)
+        console.log("Error in getFaqs:", error)
       }
     }
     getFaqs()
   }, [chatRoomId])
-
-
-
 
 
   const handleSend = async () => {
@@ -190,7 +167,7 @@ const Home = () => {
     // lastDiv?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest", scrollOffset: "50px" })
 
     try {
-      let body
+      let body = {}
 
       if (chatRoomId) {
         body = {
@@ -204,29 +181,22 @@ const Home = () => {
       }
 
       const result = await axios.post(`${Base_Url}/api/genrate-faq`, body)
-      console.log("result>>>>>>>", result)
+      console.log("handleSend: ", result)
+      setShowResponse(false)
 
       if (result.data.status === true) {
-        setShowResponse(false)
         setChatRoomId(result.data.chatRoomId)
         const gptResponse = {
           type: 'bot',
           message: result.data.response,
         }
         setMessage(prev => ([...prev, gptResponse]))
-
-        const newCard = {
-          question: inputMessage,
-          answer: result.data.response
-        }
-        setCard(prev => [...prev, newCard])
-
+      } else {
+        toast.error(result.data.error)
       }
-
-
     } catch (error) {
       setShowResponse(false)
-      console.log(error)
+      console.log("Error in handleSend:", error)
     }
   }
 
@@ -235,7 +205,6 @@ const Home = () => {
       handleSend()
     }
   }
-
 
   const handleDeleteHistory = async (e) => {
     e.preventDefault()
