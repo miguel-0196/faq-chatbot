@@ -179,7 +179,7 @@ const getAllChat = async (req, res) => {
 
   try {
     const chat = await Chat.find();
-    console.log("chat>>>>>>>>>>",chat)
+    // console.log("chat>>>>>>>>>>",chat)
 
     if (!chat) {
       res.status(404).json({ error: "Chat not found" })
@@ -192,17 +192,6 @@ const getAllChat = async (req, res) => {
 }
 
 
-const saveEditedCard = async(req, res) => {
-  console.log("saveEditedCard: ", req.body)
-
-  const {newQuestion, newAnswer, orgQuestion, orgAnswer} = req.body
-  const filter = {question: orgQuestion, answer: orgAnswer}
-  const update = {question: newQuestion, answer: newAnswer};
-
-  let doc = await Chat.findOne(filter);
-  await Chat.updateOne(filter, update);
-  res.status(200).json({ success: true, message: "OK" })
-}
 
 
 const deleteChat = async(req,res)=>{
@@ -227,4 +216,4 @@ const deleteChat = async(req,res)=>{
 
 
 
-export  {generateFaq , getChat, getAllChat, deleteChat, saveEditedCard};
+export  {generateFaq , getChat, getAllChat, deleteChat};

@@ -4,7 +4,7 @@ import { Router } from "express";
 import { getChat } from "../controller/chatController.js";
 import { getAllChat } from "../controller/chatController.js";
 import { deleteChat } from "../controller/chatController.js";
-import { saveEditedCard } from "../controller/chatController.js"
+import { updateCard } from "../controller/cardController.js"
 
 
 const genrateRoute = Router();
@@ -15,7 +15,7 @@ genrateRoute.get('/get-docs',getDocs)
 genrateRoute.get('/get-faq/:chatRoomId',getChat)
 genrateRoute.get('/get-Allfaq/',getAllChat)
 genrateRoute.delete('/deleteHistory/:chatRoomId',deleteChat)
-genrateRoute.post('/saveEditedCard', saveEditedCard)
+genrateRoute.post('/updateCard', updateCard)
 
 
 
