@@ -329,11 +329,11 @@ const Home = () => {
                   <div class="modal-body">
                     <div class="form-group">
                       <label>Question:</label>
-                      <input type='text' class="form-control" defaultValue={dlgQuestion} value={dlgQuestion} onChange={(e) => setDlgQuestion(e.target.value)} style={{ marginLeft: "0px" }} />
+                      <input type='text' class="form-control" value={dlgQuestion} onChange={(e) => setDlgQuestion(e.target.value)} style={{ marginLeft: "0px" }} />
                     </div>
                     <div class="form-group">
                       <label>Answer:</label>
-                      <textarea class="form-control" rows="5" onChange={(e) => setDlgAnswer(e.target.value)} defaultValue={dlgAnswer} value={dlgAnswer}></textarea>
+                      <textarea class="form-control" rows="5" onChange={(e) => setDlgAnswer(e.target.value)} value={dlgAnswer}></textarea>
                     </div>
                   </div>
                   <div class="modal-footer">
