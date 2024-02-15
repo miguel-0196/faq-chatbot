@@ -1,41 +1,41 @@
-import OpenAI from "openai";
-import dotenv from 'dotenv';
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import pinecone from "../utils/pinecone-client.js";
-import { PINECONE_INDEX_NAME ,PINECONE_NAME_SPACE} from "../config/pinecone.js";
-import Chat from "../models/chat.js";
+import OpenAI from "openai"
+import dotenv from 'dotenv'
+import { OpenAIEmbeddings } from "langchain/embeddings/openai"
+import { PineconeStore } from "langchain/vectorstores/pinecone"
+import pinecone from "../utils/pinecone-client.js"
+import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
+import Chat from "../models/chat.js"
 
 
 dotenv.config()
 
-const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPEN_AI_KEY })
 
-const generateFaq = async(req,res)=>{
-    console.log("req>>>>>>",req.body)
+const generateFaq = async (req, res) => {
+  console.log("req>>>>>>", req.body)
 
-   
-    const {question,chatRoomId} = req.body;
 
-    try{
+  const { question, chatRoomId } = req.body
 
-    const sanitizedQuestion = question?.trim().replaceAll('\n', ' ');
-    const index = (await pinecone).Index(PINECONE_INDEX_NAME);
+  try {
+
+    const sanitizedQuestion = question?.trim().replaceAll('\n', ' ')
+    const index = (await pinecone).Index(PINECONE_INDEX_NAME)
 
     /* create vectorstore*/
-  
-     const vectorStore = await PineconeStore.fromExistingIndex(
-        new OpenAIEmbeddings({ openAIApiKey: "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" }),
-        {
-          pineconeIndex: index,
-          textKey: 'text',
-          namespace: PINECONE_NAME_SPACE,
-        },
-      );
-   
+
+    const vectorStore = await PineconeStore.fromExistingIndex(
+      new OpenAIEmbeddings({ openAIApiKey: "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" }),
+      {
+        pineconeIndex: index,
+        textKey: 'text',
+        namespace: PINECONE_NAME_SPACE,
+      },
+    )
+
     console.log("vectorStore>>>>>", vectorStore)
 
-    const docs = await vectorStore.similaritySearch(sanitizedQuestion, 5);
+    const docs = await vectorStore.similaritySearch(sanitizedQuestion, 5)
     const jsonDocs = JSON.stringify(docs)
     console.log("docs>>>>", jsonDocs)
 
@@ -43,7 +43,7 @@ const generateFaq = async(req,res)=>{
 
 
     const PROMPT =
-    `
+      `
     * * Please provide a answer according to uploaded docs. **
     Question: ${question}
     =========
@@ -53,38 +53,38 @@ const generateFaq = async(req,res)=>{
 
 
 
-    if(chatRoomId){
+    if (chatRoomId) {
 
-      const chat = await Chat.findById(chatRoomId);
+      const chat = await Chat.findById(chatRoomId)
 
       if (!chat) {
-        return res.status(404).json({ error: "Chat not found" });
+        return res.status(404).json({ error: "Chat not found" })
       }
       // Add a new message to the chat
-      chat.messages.push({ sender: "user", content: question });
-      chat.cards.push({ sender: "user", content: question });
+      chat.messages.push({ sender: "user", content: question })
+      chat.cards.push({ sender: "user", content: question })
       // Save the updated chat
-      const updatedChat = await chat.save();
+      const updatedChat = await chat.save()
       const updatedChatId = updatedChat._id
 
-      const allMessages = await Chat.findById(chatRoomId);
-                    console.log("allMessages>>>>>>", allMessages)
+      const allMessages = await Chat.findById(chatRoomId)
+      console.log("allMessages>>>>>>", allMessages)
 
-                    const history = allMessages?.messages?.map(message => ({
-                      role: message.sender == 'user' ? 'user' : 'assistant', // Map "sender" to "role"
-                      content: message.content
-                    }));
+      const history = allMessages?.messages?.map(message => ({
+        role: message.sender == 'user' ? 'user' : 'assistant', // Map "sender" to "role"
+        content: message.content
+      }))
 
-                    console.log("history>>>>",history)
+      console.log("history>>>>", history)
 
-                    let usermsgs;
+      let usermsgs
 
-                    if (history) {
-                      console.log(history, question, ">>>>>>>>>>>if>>>>>>>>>>>>>>>.")
-                      usermsgs = [{ role: 'system', content: PROMPT }, ...history];
-                    } else {
-                      usermsgs = [{ role: 'system', content: PROMPT },{ role: 'user', content: question }];
-                    }
+      if (history) {
+        console.log(history, question, ">>>>>>>>>>>if>>>>>>>>>>>>>>>.")
+        usermsgs = [{ role: 'system', content: PROMPT }, ...history]
+      } else {
+        usermsgs = [{ role: 'system', content: PROMPT }, { role: 'user', content: question }]
+      }
 
 
 
@@ -92,22 +92,22 @@ const generateFaq = async(req,res)=>{
       const response = await openai.chat.completions.create({
         messages: usermsgs,
         model: 'gpt-3.5-turbo-1106',
-      });
-      console.log("responseHistory>>>>>>>>", response.choices[0].message.content);
-      const text = response.choices[0].message.content;
+      })
+      console.log("responseHistory>>>>>>>>", response.choices[0].message.content)
+      const text = response.choices[0].message.content
       if (updatedChat) {
         if (text) {
-          chat.messages.push({ sender: "bot", content: text});
-          chat.cards.push({ sender: "bot", content: text})
-          const updatedChat = await chat.save();
+          chat.messages.push({ sender: "bot", content: text })
+          chat.cards.push({ sender: "bot", content: text })
+          const updatedChat = await chat.save()
+        }
+      }
+      res.status(200).json({ status: true, chatRoomId: updatedChatId, response: text })
     }
-  }
-  res.status(200).json({status:true,chatRoomId: updatedChatId, response:text})
-}
-    else{
-   const response = await openai.chat.completions.create({
-      messages: [
-        {
+    else {
+      const response = await openai.chat.completions.create({
+        messages: [
+          {
             "role": "system", // Use "system" role for the prompt
             "content": PROMPT,
           },
@@ -115,54 +115,54 @@ const generateFaq = async(req,res)=>{
             "role": "user",
             "content": question
           },
-      ],
-      model: 'gpt-3.5-turbo-1106',
-    });
-    console.log("responsegenerateGPTResponsefunction>>>>>>>>", response.choices[0].message.content);
-    const text = response.choices[0].message.content;
+        ],
+        model: 'gpt-3.5-turbo-1106',
+      })
+      console.log("responsegenerateGPTResponsefunction>>>>>>>>", response.choices[0].message.content)
+      const text = response.choices[0].message.content
 
-    const newChat = new Chat();
+      const newChat = new Chat()
 
-    if (question) {
-      const messageArray = [{ sender: "user", content: question }];
-      newChat.messages.push(...messageArray);
-      newChat.cards.push(...messageArray)
-    }
-
-    // Save the chat to the database
-    const savedChat = await newChat.save();
-    console.log("savedChat>>>>>",savedChat)
-
-    const chatId = savedChat._id
-
-
-    if (chatId) {
-      console.log("chatId2>>>", chatId)
-      const chat = await Chat.findById(chatId);
-
-      if (text ) {
-        console.log('dummyresponse')
-        chat.messages.push({ sender: "bot", content: text});
-        chat.cards.push({ sender: "bot", content: text})
-        const updatedChat = await chat.save();
+      if (question) {
+        const messageArray = [{ sender: "user", content: question }]
+        newChat.messages.push(...messageArray)
+        newChat.cards.push(...messageArray)
       }
-    }
 
-     res.status(200).json({status:true,chatRoomId: chatId, response:text})
+      // Save the chat to the database
+      const savedChat = await newChat.save()
+      console.log("savedChat>>>>>", savedChat)
+
+      const chatId = savedChat._id
+
+
+      if (chatId) {
+        console.log("chatId2>>>", chatId)
+        const chat = await Chat.findById(chatId)
+
+        if (text) {
+          console.log('dummyresponse')
+          chat.messages.push({ sender: "bot", content: text })
+          chat.cards.push({ sender: "bot", content: text })
+          const updatedChat = await chat.save()
+        }
+      }
+
+      res.status(200).json({ status: true, chatRoomId: chatId, response: text })
     }
   }
-    catch(error){
-        res.status(500).json({status:false, error:'something went wrong !'})
-    }
+  catch (error) {
+    res.status(500).json({ status: false, error: 'something went wrong !' })
+  }
 
 }
 
 
 const getChat = async (req, res) => {
-  const { chatRoomId } = req.params;
+  const { chatRoomId } = req.params
 
   try {
-    const chat = await Chat.findById(chatRoomId);
+    const chat = await Chat.findById(chatRoomId)
     // console.log("chat>>>>>>>>>>",chat)
 
     if (!chat) {
@@ -178,7 +178,7 @@ const getChat = async (req, res) => {
 const getAllChat = async (req, res) => {
 
   try {
-    const chat = await Chat.find();
+    const chat = await Chat.find()
     // console.log("chat>>>>>>>>>>",chat)
 
     if (!chat) {
@@ -194,26 +194,26 @@ const getAllChat = async (req, res) => {
 
 
 
-const deleteChat = async(req,res)=>{
-  const { chatRoomId } = req.params;
+const deleteChat = async (req, res) => {
+  const { chatRoomId } = req.params
   console.log("chatRoomId>>>>>>>>>", chatRoomId)
 
   try {
-    const chat = await Chat.findById(chatRoomId);
+    const chat = await Chat.findById(chatRoomId)
 
     if (!chat) {
-      return res.status(404).json({ error: "Chat not found" });
+      return res.status(404).json({ error: "Chat not found" })
     }
-    chat.messages = [];
-    const updatedChat = await chat.save();
-    res.status(200).json({ success: true, message: "Chat messages deleted successfully" });
+    chat.messages = []
+    const updatedChat = await chat.save()
+    res.status(200).json({ success: true, message: "Chat messages deleted successfully" })
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error(error)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 }
 
 
 
 
-export  {generateFaq , getChat, getAllChat, deleteChat};
+export { generateFaq, getChat, getAllChat, deleteChat }
