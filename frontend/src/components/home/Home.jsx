@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 
 const Home = () => {
 
-  //const Base_Url = "http://66.42.101.116:8000"
+  //const Base_Url = "http://66.42.101.116:8000" Debug
   const Base_Url = "http://localhost:8000"
 
   const [file, setFile] = useState('');
@@ -112,43 +112,24 @@ const Home = () => {
     }
   }
 
+  const loadAllData = async () => {
+    const cards = await axios.get(`${Base_Url}/api/getCards`)
+    if (cards.data.sucess == true) {
+      setCard(cards.data.cards)
+      setFilterCard(cards.data.cards)
+    }
+
+    // Debug
+    const AllChat = await axios.get(`${Base_Url}/api/get-Allfaq`);
+    if (AllChat.data.sucess == true && AllChat.data.userChat.length > 0) {
+      setChatRoomId(AllChat.data.userChat[0]._id)
+      setMessage(AllChat.data.userChat[0].messages)
+    }
+  }
 
   useEffect(() => {
-    const getAllChat = async () => {
-      try {
-        const AllChat = await axios.get(`${Base_Url}/api/get-Allfaq`);
-        if (AllChat.data.sucess == true) {
-          setChatRoomId(AllChat.data.userChat[0]._id)
-          setMessage(AllChat.data.userChat[0].messages)
-
-          const messageCard = AllChat.data.userChat[0].cards
-
-          const newCardList = [];
-          for (let i = 0; i < messageCard.length - 1; i += 2) {
-            const userMessage = messageCard[i];
-            const botMessage = messageCard[i + 1];
-
-            if (userMessage.sender === "user" && botMessage.sender === "bot") {
-              const newCard = {
-                question: userMessage.content,
-                answer: botMessage.content
-              };
-              newCardList.push(newCard);
-            }
-          }
-          setCard(newCardList)
-        }
-      }
-      catch (error) {
-        console.log("getAllChat error:", error)
-      }
-    }
+    loadAllData()
   }, [])
-
-
-
-
-
 
 
 
@@ -161,12 +142,12 @@ const Home = () => {
           if (Chat.data.sucess == true) {
             setChatRoomId(Chat.data.userChat._id)
             setMessage(Chat.data.userChat.messages)
-            const messageCard = Chat.data.userChat.cards
+            const cards = Chat.data.userChat.cards
 
             const newCardList = [];
-            for (let i = 0; i < messageCard.length - 1; i += 2) {
-              const userMessage = messageCard[i];
-              const botMessage = messageCard[i + 1];
+            for (let i = 0; i < cards.length - 1; i += 2) {
+              const userMessage = cards[i];
+              const botMessage = cards[i + 1];
 
               if (userMessage.sender === "user" && botMessage.sender === "bot") {
                 const newCard = {

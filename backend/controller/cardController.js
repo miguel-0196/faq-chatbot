@@ -1,6 +1,15 @@
 import Card from "../models/card.js"
 
 
+const getCards = async (req, res) => {
+    try {
+        const cards = await Card.find();
+        res.status(200).json({ sucess: true, cards: cards })
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
 const updateCard = async (req, res) => {
     const { answer, question, orgAnswer, orgQuestion } = req.body
     const filter = { question: orgQuestion, answer: orgAnswer }
@@ -16,4 +25,4 @@ const updateCard = async (req, res) => {
 }
 
 
-export { updateCard }
+export { getCards, updateCard }
