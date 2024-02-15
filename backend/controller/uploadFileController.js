@@ -22,7 +22,7 @@ const uploadPdf = async (req, res) => {
     const newpath = `${uploadPaths}/${uniqueFileName}`
 
     await fs.writeFile(`${uploadPaths}/${uploadedFile}`, req.file.buffer)
-    await ingest(uploadPaths)
+    await ingest()
 
     return res.status(200).json({ status: true, message: 'File uploaded, moved, and ingested successfully!' })
   }
