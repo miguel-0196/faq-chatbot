@@ -49,50 +49,36 @@ const generateFaq = async (req, res) => {
 
       // Add a new message to the chat
       chat.messages.push({ sender: "user", content: question })
-      chat.cards.push({ sender: "user", content: question })
-      
-      // Save the updated chat
       const updatedChat = await chat.save()
       const updatedChatId = updatedChat._id
 
       const allMessages = await Chat.findById(chatRoomId)
-      console.log("allMessages>>>>>>", allMessages)
-
       const history = allMessages?.messages?.map(message => ({
         role: message.sender == 'user' ? 'user' : 'assistant', // Map "sender" to "role"
         content: message.content
       }))
 
-      console.log("history>>>>", history)
-
-      let usermsgs
-
+      let usermsgs = []
       if (history) {
-        console.log(history, question, ">>>>>>>>>>>if>>>>>>>>>>>>>>>.")
         usermsgs = [{ role: 'system', content: PROMPT }, ...history]
       } else {
         usermsgs = [{ role: 'system', content: PROMPT }, { role: 'user', content: question }]
       }
 
-
-
-
       const response = await openai.chat.completions.create({
         messages: usermsgs,
         model: 'gpt-3.5-turbo-1106',
       })
-      console.log("responseHistory>>>>>>>>", response.choices[0].message.content)
       const text = response.choices[0].message.content
       if (updatedChat) {
         if (text) {
           chat.messages.push({ sender: "bot", content: text })
-          chat.cards.push({ sender: "bot", content: text })
           const updatedChat = await chat.save()
         }
       }
       res.status(200).json({ status: true, chatRoomId: updatedChatId, response: text })
     }
-    else {
+    else { // dummyresponse2
       const response = await openai.chat.completions.create({
         messages: [
           {
@@ -106,33 +92,24 @@ const generateFaq = async (req, res) => {
         ],
         model: 'gpt-3.5-turbo-1106',
       })
-      console.log("responsegenerateGPTResponsefunction>>>>>>>>", response.choices[0].message.content)
+      console.log("responseHistory2>>>>>", response.choices[0].message.content)
       const text = response.choices[0].message.content
 
-      const newChat = new Chat()
-
-      if (question) {
-        const messageArray = [{ sender: "user", content: question }]
-        newChat.messages.push(...messageArray)
-        newChat.cards.push(...messageArray)
-      }
-
       // Save the chat to the database
+      const newChat = new Chat()
+      const messageArray = [{ sender: "user", content: question }]
+      newChat.messages.push(...messageArray)
       const savedChat = await newChat.save()
-      console.log("savedChat>>>>>", savedChat)
-
+      console.log("savedChat2>>>>>", savedChat)
       const chatId = savedChat._id
 
-
       if (chatId) {
-        console.log("chatId2>>>", chatId)
+        console.log("chatId2>>>>>", chatId)
         const chat = await Chat.findById(chatId)
 
         if (text) {
-          console.log('dummyresponse')
           chat.messages.push({ sender: "bot", content: text })
-          chat.cards.push({ sender: "bot", content: text })
-          const updatedChat = await chat.save()
+          await chat.save()
         }
       }
 
