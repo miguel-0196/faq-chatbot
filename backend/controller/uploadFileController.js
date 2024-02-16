@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs/promises'
-import { pineconeInstance, ingest } from '../utils/pinecone.js'
+import { pineconeInstance, initPineconeDB, removePineconeDB } from '../utils/pinecone.js'
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
 
 
@@ -22,7 +22,7 @@ const uploadPdf = async (req, res) => {
     const newpath = `${uploadPaths}/${uniqueFileName}`
 
     await fs.writeFile(`${uploadPaths}/${uploadedFile}`, req.file.buffer)
-    await ingest()
+    await initPineconeDB()
 
     return res.status(200).json({ status: true, message: 'File uploaded, moved, and ingested successfully!' })
   }
@@ -36,11 +36,7 @@ const uploadPdf = async (req, res) => {
 
 const deleteUploadedDocs = async (req, res) => {
 
-  const index = (await pineconeInstance).Index(PINECONE_INDEX_NAME)
-  const namespaceIndex = index.namespace(PINECONE_NAME_SPACE)
-  const response = await namespaceIndex.deleteAll()
-
-  console.log("deleteUploadedDocs>>>>>>>>>", response)
+  await removePineconeDB()
   res.status(200).json({ success: true, message: "All docs deleted from pinecone" })
 }
 

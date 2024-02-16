@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import process from 'process'
 import Card from '../models/card.js'
-import { ingest } from '../utils/pinecone.js'
+import { initPineconeDB } from '../utils/pinecone.js'
 
 const getCards = async (req, res) => {
     try {
@@ -43,7 +43,7 @@ const updateCard = async (req, res) => {
         console.log("Updated the FAQ DB:", filePath)
 
         // ingest pinecone
-        await ingest()
+        await initPineconeDB()
         res.status(200).json({ success: true })
     } catch (error) {
         res.status(500).json({ error: error })

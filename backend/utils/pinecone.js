@@ -30,7 +30,7 @@ const pineconeInstance = async () => {
   }
 }
 
-const ingest = async () => {
+const initPineconeDB = async () => {
   try {
     const pineconeConfig = {
       apiKey: process.env.PINECONE_API_KEY,
@@ -75,5 +75,24 @@ const ingest = async () => {
   }
 }
 
-export { pineconeInstance, ingest }
+const removePineconeDB = async () => {
+  try {
+    const pineconeConfig = {
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_ENVIRONMENT,
+    }
+    const pineconeClient = new Pinecone(pineconeConfig)
+
+    /* Remove original docs */
+    const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME)
+    const namespaceIndex = pineconeIndex.namespace(PINECONE_NAME_SPACE)
+    await namespaceIndex.deleteAll()
+
+    console.log("removePineconeDB result:", await pineconeClient.index(process.env.PINECONE_INDEX_NAME).describeIndexStats())
+  } catch (error) {
+    console.log('removePineconeDB error:', error)
+  }
+}
+
+export { pineconeInstance, initPineconeDB, removePineconeDB }
 export default pineconeInstance
