@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 
-const mdb = mongoose.connect("mongodb://127.0.0.1:27017/faq-chat")
+const url = "mongodb://127.0.0.1:27017/faq-chat"
+const mdb = mongoose.connect(url)
     .then(() => {
-        console.log("mongodb is connected")
+        console.log("Connected:", url)
     })
     .catch((error) => {
         console.log(error)

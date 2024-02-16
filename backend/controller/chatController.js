@@ -146,16 +146,9 @@ const generateFaq = async (req, res) => {
 
 
 const getChat = async (req, res) => {
-  const { chatRoomId } = req.params
-
   try {
+    const { chatRoomId } = req.params
     const chat = await Chat.findById(chatRoomId)
-    console.log("getChat>>>>>>>>>>",chat)
-
-    if (!chat) {
-      res.status(404).json({ error: "Chat not found" })
-    }
-
     res.status(200).json({ sucess: true, userChat: chat })
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" })
@@ -163,43 +156,31 @@ const getChat = async (req, res) => {
 }
 
 const getAllChat = async (req, res) => {
-
   try {
     const chat = await Chat.find()
-    console.log("getAllChat>>>>>>>>>>", chat)
-
-    if (!chat) {
-      res.status(404).json({ error: "Chat not found" })
-    }
-
     res.status(200).json({ sucess: true, userChat: chat })
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" })
   }
 }
 
-
-
-
 const deleteChat = async (req, res) => {
-  const { chatRoomId } = req.params
-  console.log("deleteChat>>>>>>>>>", chatRoomId)
-
   try {
+    const { chatRoomId } = req.params
     const chat = await Chat.findById(chatRoomId)
 
     if (!chat) {
       return res.status(404).json({ error: "Chat not found" })
     }
+
     chat.messages = []
     const updatedChat = await chat.save()
+
     res.status(200).json({ success: true, message: "Chat messages deleted successfully" })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: "Internal Server Error" })
   }
 }
-
-
 
 export { generateFaq, getChat, getAllChat, deleteChat }

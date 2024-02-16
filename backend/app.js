@@ -15,6 +15,7 @@ app.use(cors())
 app.use('/api', router)
 app.use('/api', genrateRoute)
 
-app.listen(8001, () => {
-    console.log("server is running on 8001 port")
+const port = 8001
+app.listen(port, () => {
+    console.log("Running server on port:", port)
 })
