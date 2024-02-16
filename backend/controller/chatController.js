@@ -2,7 +2,7 @@ import OpenAI from "openai"
 import dotenv from 'dotenv'
 import { OpenAIEmbeddings } from "langchain/embeddings/openai"
 import { PineconeStore } from "langchain/vectorstores/pinecone"
-import pinecone from "../utils/pinecone.js"
+import pineconeInstance from "../utils/pinecone.js"
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
 import Chat from "../models/chat.js"
 
@@ -17,7 +17,7 @@ const generateFaq = async (req, res) => {
     const { question, chatRoomId } = req.body
 
     /* create vectorstore */
-    const pc = await pinecone()
+    const pc = await pineconeInstance()
     const index = pc.Index(PINECONE_INDEX_NAME)
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_KEY }), {
@@ -38,7 +38,7 @@ const generateFaq = async (req, res) => {
     context:${jsonDocs}
     =========
     Answer in Markdown:`
-
+    console.log(PROMPT)
 
     if (chatRoomId) {
       const chat = await Chat.findById(chatRoomId)

@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs/promises'
-import { pinecone, ingest } from '../utils/pinecone.js'
+import { pineconeInstance, ingest } from '../utils/pinecone.js'
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
 
 
@@ -36,7 +36,7 @@ const uploadPdf = async (req, res) => {
 
 const deleteUploadedDocs = async (req, res) => {
 
-  const index = (await pinecone).Index(PINECONE_INDEX_NAME)
+  const index = (await pineconeInstance).Index(PINECONE_INDEX_NAME)
   const namespaceIndex = index.namespace(PINECONE_NAME_SPACE)
   const response = await namespaceIndex.deleteAll()
 

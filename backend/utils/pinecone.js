@@ -1,5 +1,5 @@
 import path from 'path'
-import dotenv from 'dotenv'
+import dotenv, { config } from 'dotenv'
 
 import { Pinecone } from '@pinecone-database/pinecone'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
@@ -9,13 +9,16 @@ import { TextLoader } from 'langchain/document_loaders/fs/text'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory'
 
+
+import { PINECONE_NAME_SPACE } from "../config/pinecone.js"
+
 dotenv.config()
 
 if (!process.env.PINECONE_ENVIRONMENT || !process.env.PINECONE_API_KEY) {
   throw new Error('Pinecone environment or api key missing')
 }
 
-const pinecone = async () => {
+const pineconeInstance = async () => {
   try {
     const pineconeConfig = {
       apiKey: process.env.PINECONE_API_KEY,
@@ -33,7 +36,7 @@ const ingest = async () => {
       apiKey: process.env.PINECONE_API_KEY,
       environment: process.env.PINECONE_ENVIRONMENT,
     }
-    const pinecone = new Pinecone(pineconeConfig)
+    const pineconeClient = new Pinecone(pineconeConfig)
     const uploadPaths = path.join(process.cwd(), 'uploads')
 
     /* Load raw docs from the all files in the directory */
@@ -49,20 +52,28 @@ const ingest = async () => {
       chunkOverlap: 400,
     })
     const Docs = await textSplitter.splitDocuments(rawDocs)
+    console.log('Ingest docs:', Docs)
 
     /* Create and store the embeddings in the vectorStore */
     const embeddings = new OpenAIEmbeddings({ openAIApiKey: process.env.OPEN_AI_KEY })
-    const index = pinecone.Index(process.env.PINECONE_INDEX_NAME)
+    
+    /* Remove original docs */
+    const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME)
+    const namespaceIndex = pineconeIndex.namespace(PINECONE_NAME_SPACE)
+    await namespaceIndex.deleteAll()
 
+    /* Add new docs */
     await PineconeStore.fromDocuments(Docs, embeddings, {
-      pineconeIndex: index,
-      namespace: process.env.PINECONE_NAME_SPACE,
+      pineconeIndex: pineconeIndex,
+      namespace: PINECONE_NAME_SPACE,
       textKey: 'text',
     })
+
+    console.log("Ingest result db:", await pineconeClient.index(process.env.PINECONE_INDEX_NAME).describeIndexStats())
   } catch (error) {
     console.log('Ingest error:', error)
   }
 }
 
-export { pinecone, ingest }
-export default pinecone
+export { pineconeInstance, ingest }
+export default pineconeInstance
