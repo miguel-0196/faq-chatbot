@@ -232,14 +232,15 @@ const Home = () => {
 
     try {
       const deleteDocs = await axios.delete(`${Base_Url}/api/delete-docs`)
-      console.log("deleteDocs>>>>>>", deleteDocs)
-      toast.success("docs deleted successFully")
+      console.log("handleDeleteDocs response>>>>>", deleteDocs)
 
+      setCard([])
+      setFilterCard([])
+      toast.success('Deleted docs successFully.')
     } catch (error) {
-      console.log("error>>>>>>>>", error)
-      toast.error("something went wrong !")
+      console.log("handleDeleteDocs error>>>>>", error)
+      toast.error('Failed to deleted docs.')
     }
-
   }
 
   return (

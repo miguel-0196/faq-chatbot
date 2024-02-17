@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs/promises'
 import { pineconeInstance, initPineconeDB, removePineconeDB } from '../utils/pinecone.js'
 import { PINECONE_INDEX_NAME, PINECONE_NAME_SPACE } from "../config/pinecone.js"
-
+import Card from '../models/card.js'
 
 
 
@@ -35,8 +35,22 @@ const uploadPdf = async (req, res) => {
 
 
 const deleteUploadedDocs = async (req, res) => {
-
   await removePineconeDB()
+  await Card.deleteMany({})
+
+  const uploadPaths = path.join(process.cwd(), 'uploads')
+
+  fs.readdir(uploadPaths, (err, files) => {
+    if (err) throw err;
+  
+    for (const file of files) {
+      fs.unlink(`${uploadPaths}/${file}`, (err) => {
+        if (err) throw err;
+        console.log(`${file} was successfully deleted`)
+      })
+    }
+  })
+
   res.status(200).json({ success: true, message: "All docs deleted from pinecone" })
 }
 
