@@ -5,4 +5,5 @@ The administrator can create the chatbot's database by uploading PDF files, allo
 If a question is not covered by the uploaded PDFs, the chatbot can utilize OpenAI services to provide an answer.
 
 Backend: Node.js(Express), MongoDB, PDF-Parse, OpenAI(GPT4), Langchain, Pinecone.
+
 Frontend: React
